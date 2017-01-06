@@ -3,6 +3,8 @@
  */
 package observer.impl;
 
+import java.util.ArrayList;
+
 import observer.Observer;
 import observer.Subject;
 
@@ -12,31 +14,64 @@ import observer.Subject;
  */
 public class WeatherData implements Subject {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see observer.Subject#registerObserver(observer.Observer)
 	 */
-	@Override
-	public void registerObserver(Observer o) {
-		// TODO Auto-generated method stub
+	private ArrayList observers;
+	private float temperature;
+	private float humidity;
+	private float pressure;
 
+	public WeatherData() {
+
+		observers = new ArrayList();
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public void registerObserver(Observer o) {
+
+		observers.add(o);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see observer.Subject#removeObserver(observer.Observer)
 	 */
 	@Override
 	public void removeObserver(Observer o) {
-		// TODO Auto-generated method stub
+		int i = observers.indexOf(o);
+		if (i > 0) {
+			observers.remove(i);
+		}
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see observer.Subject#notifyObservers()
 	 */
 	@Override
 	public void notifyObservers() {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < observers.size(); i++) {
+			Observer observer = (Observer) observers.get(i);
+			observer.update(temperature, humidity, pressure);
+		}
 
+	}
+
+	public void measurementsChanged() {
+		notifyObservers();
+	}
+
+	public void setMeasurements(float temp, float humid, float pressure) {
+		this.temperature = temp;
+		this.humidity = humid;
+		this.pressure = pressure;
+		measurementsChanged();
 	}
 
 }
